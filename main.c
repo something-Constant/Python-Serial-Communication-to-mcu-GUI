@@ -73,19 +73,22 @@ enum Commands
   Relay2_OFF,
   Voltage,
   Temperature,
-  help
+  help,
+  Status
 };
 
 #define _Relay1_ON HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET)
 #define _Relay1_OFF HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET)
+#define _Relay1_status HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)
 
 #define _Relay2_ON HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_SET)
 #define _Relay2_OFF HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET)
+#define _Relay2_status HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_14)
 
 #define End '\n'
 
-char Command[7][12] = {"Relay1 ON", "Relay1 OFF",  "Relay2 ON", "Relay2 OFF",
-                       "Voltage",   "Temperature", "help"};
+char Command[8][13] = {"Relay1 ON", "Relay1 OFF",  "Relay2 ON", "Relay2 OFF",
+                       "Voltage",   "Temperature", "help",      "Status"};
 
 uint32_t ADC[2];
 char v;
@@ -94,9 +97,9 @@ char HelpCommand[250] =
     "Ralays "
     "state\n Command: <Relay[Number] [ON | OFF]> \n\nReceiving Potentiometer "
     "Voltage \n Command: <Voltage> \n\nReceiving Temperature\r \nCommand:"
-    "<Temperature>";
+    "<Temperature>\r";
 
-char RxBuffer[20], TxBuffer[50], Temp[1], Index, MatchFlag;
+char RxBuffer[20], TxBuffer[100], Temp[1], Index, MatchFlag;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
@@ -105,7 +108,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     Index++;
   }
 
-  if (Index > 12)
+  if (Index > 13)
     Index = 0;
 
   HAL_UART_Receive_IT(&huart1, (uint8_t *)Temp, 1);
@@ -228,7 +231,7 @@ int main(void) {
 
     if (Temp[0] == End) {
 
-      for (v = 0; v < 7; v++) {
+      for (v = 0; v < 8; v++) {
         if (Match(RxBuffer, &Command[v][0])) {
           MatchFlag = 1;
           break;
@@ -263,7 +266,7 @@ int main(void) {
             break;
 
           case Temperature:
-            sprintf(TxBuffer, "\nTemperature = %0.2f\r",
+            sprintf(TxBuffer, "\nTemperature = %0.2F\r",
                     ADCData(ADC, Temperature));
             UART_Sent(TxBuffer);
             break;
@@ -271,6 +274,16 @@ int main(void) {
           case help:
             UART_Sent(HelpCommand);
             UART_Sent("\n\n");
+            break;
+
+          case Status:
+            sprintf(TxBuffer,
+                    "\n{\"Relay 1\":%d,\"Relay 2\":%d,\"Voltage\":%0.2F "
+                    ",\"Temperature\":%0.2F}\r",
+                    _Relay1_status, _Relay2_status, ADCData(ADC, Voltage),
+                    ADCData(ADC, Temperature));
+            UART_Sent(TxBuffer);
+
             break;
         }
         MatchFlag = 0;

@@ -18,7 +18,8 @@ class App():
                                        fg_color=self.OffColor,
                                        hover_color=self.OffColor)
 
-        self.Button_Relay1.grid(row=0, column=1, padx=20, pady=10)
+        # self.Button_Relay1.grid(row=0, column=1, padx=20, pady=10)
+        self.Button_Relay1.place(relx=0, rely=0.1)
 
         self.Button_Relay2 = CTkButton(self.root,
                                        command=self.button_Relay2,
@@ -35,13 +36,13 @@ class App():
                                         hover_color=self.OffColor)
 
         self.Button_Voltage.grid(row=2, column=1, padx=20, pady=10)
-        
+
         self.Lable_Voltage = CTkLabel(self.root,
-                                   text="N/A",
-                                   bg_color="White",
-                                   text_color="Black",
-                                   height=25,
-                                   width=75)
+                                      text="N/A",
+                                      bg_color="White",
+                                      text_color="Black",
+                                      height=25,
+                                      width=75)
         self.Lable_Voltage.grid(row=2, column=0, padx=20, pady=10)
 
         self.Button_Temp = CTkButton(self.root,
@@ -56,15 +57,13 @@ class App():
                                    text="N/A",
                                    bg_color="White",
                                    text_color="Black",
-                                   font= ("Gentona", 22))
+                                   font=("Gentona", 22))
         self.Lable_Temp.grid(row=3, column=0, padx=20, pady=10)
 
         self.Relay1_State: int = 0
         self.Relay2_State: int = 0
 
-
         self.root.mainloop()
-
 
     def button_Relay1(self):
         try:
@@ -178,7 +177,47 @@ class App():
 
 def main():
 
-    app = App()
+    # app = App()
+
+    Window = CTk()
+    Window.geometry("600x500")
+    Window.title("Serial Controller")
+
+    Button_Relay1 = CTkButton(Window, text="Relay 1")
+    Button_Relay1.place(relx=0.5,
+                        rely=0.2,
+                        anchor="center",
+                        relwidth=0.3,
+                        relheight=0.09)
+
+    Button_Relay2 = CTkButton(Window, text="Relay 2")
+    Button_Relay2.place(relx=0.5,
+                        rely=0.3,
+                        anchor="center",
+                        relwidth=0.3,
+                        relheight=0.09)
+
+    Button_Voltage = CTkButton(Window, text="Voltage: N/A")
+    Button_Voltage.place(relx=0.5,
+                         rely=0.5,
+                         anchor="center",
+                         relwidth=0.3,
+                         relheight=0.09)
+
+    Button_Temp = CTkButton(Window, text="Tempereture: N/A")
+    Button_Temp.place(relx=0.5,
+                      rely=0.6,
+                      anchor="center",
+                      relwidth=0.3,
+                      relheight=0.09)
+
+    # Lable_Voltage = CTkLabel(Window, text="N/A", height=25, width=75)
+    # Lable_Voltage.place(relx= 0.0, rely=0.3)
+
+    # Lable_Temp = CTkLabel(Window, text="N/A", font=("Gentona", 22))
+    # Lable_Temp.place(relx= 0.0, rely=0.5)
+
+    Window.mainloop()
 
 
 if __name__ == "__main__":

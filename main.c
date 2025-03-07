@@ -93,7 +93,7 @@ char HelpCommand[250] =
     "\n\nUsege: Command:<Parametr> \nThis are Commands: \n\nChangeing the "
     "Ralays "
     "state\n Command: <Relay[Number] [ON | OFF]> \n\nReceiving Potentiometer "
-    "Voltage \n Command: <Voltage> \n\nReceiving Temperature \n Command: "
+    "Voltage \n Command: <Voltage> \n\nReceiving Temperature\r \nCommand:"
     "<Temperature>";
 
 char RxBuffer[20], TxBuffer[50], Temp[1], Index, MatchFlag;
@@ -239,31 +239,31 @@ int main(void) {
         switch (v) {
           case Relay1_ON:
             _Relay1_ON;
-            UART_Sent("\nRelay 1 is ON");
+            UART_Sent("\nRelay 1 is ON\r");
             break;
 
           case Relay1_OFF:
             _Relay1_OFF;
-            UART_Sent("\nRelay 1 is OFF");
+            UART_Sent("\nRelay 1 is OFF\r");
             break;
 
           case Relay2_ON:
             _Relay2_ON;
-            UART_Sent("\nRelay 2 is ON");
+            UART_Sent("\nRelay 2 is ON\r");
             break;
 
           case Relay2_OFF:
             _Relay2_OFF;
-            UART_Sent("\nRelay 2 is OFF");
+            UART_Sent("\nRelay 2 is OFF\r");
             break;
 
           case Voltage:
-            sprintf(TxBuffer, "\nVoltage = %0.2F", ADCData(ADC, Voltage));
+            sprintf(TxBuffer, "\nVoltage = %0.2F\r", ADCData(ADC, Voltage));
             UART_Sent(TxBuffer);
             break;
 
           case Temperature:
-            sprintf(TxBuffer, "\nTemperature = %0.2f",
+            sprintf(TxBuffer, "\nTemperature = %0.2f\r",
                     ADCData(ADC, Temperature));
             UART_Sent(TxBuffer);
             break;
